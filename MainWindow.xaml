@@ -1,0 +1,150 @@
+<Window x:Class="Luba.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="AZURE" Width="1020" Height="640"
+        WindowStartupLocation="CenterScreen" WindowStyle="None" AllowsTransparency="True"
+        Background="Transparent" ResizeMode="CanMinimize" FontFamily="Segoe UI" FontSize="14">
+  <Border Background="{StaticResource Bg}" CornerRadius="16" BorderBrush="#26FFFFFF" BorderThickness="1">
+    <Grid>
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="200"/>
+        <ColumnDefinition Width="*"/>
+      </Grid.ColumnDefinitions>
+
+      <!-- Сайдбар -->
+      <Border Background="{StaticResource Surface}" CornerRadius="16,0,0,16">
+        <DockPanel>
+          <StackPanel DockPanel.Dock="Top" Margin="24,30,0,26">
+            <TextBlock Text="AZURE" FontSize="34" FontWeight="Black" Foreground="{DynamicResource Accent}">
+              <TextBlock.RenderTransform><SkewTransform AngleX="-10"/></TextBlock.RenderTransform>
+            </TextBlock>
+            <TextBlock Text="minecraft launcher" FontSize="11" Foreground="{StaticResource Muted}" Margin="2,0,0,0"/>
+          </StackPanel>
+          <TextBlock DockPanel.Dock="Bottom" Text="офлайн · 1.16.5 – 1.20.1" FontSize="11" Foreground="{StaticResource Muted}" Margin="24,0,0,22"/>
+          <StackPanel>
+            <RadioButton x:Name="navPlay" Style="{StaticResource Nav}" Content="Играть" Tag="Play" GroupName="nav" IsChecked="True" Checked="Nav_Checked"/>
+            <RadioButton x:Name="navInst" Style="{StaticResource Nav}" Content="Сборки" Tag="Inst" GroupName="nav" Checked="Nav_Checked"/>
+            <RadioButton x:Name="navAcc" Style="{StaticResource Nav}" Content="Аккаунты" Tag="Acc" GroupName="nav" Checked="Nav_Checked"/>
+            <RadioButton x:Name="navSet" Style="{StaticResource Nav}" Content="Настройки" Tag="Set" GroupName="nav" Checked="Nav_Checked"/>
+          </StackPanel>
+        </DockPanel>
+      </Border>
+
+      <!-- Правая часть -->
+      <Grid Grid.Column="1">
+        <Grid.RowDefinitions>
+          <RowDefinition Height="54"/>
+          <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Grid Background="Transparent" MouseLeftButtonDown="Drag">
+          <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,12,16,0" VerticalAlignment="Top">
+            <Button Content="—" Style="{StaticResource Btn}" Padding="12,4" Click="Min_Click" Margin="0,0,6,0"/>
+            <Button Content="✕" Style="{StaticResource Btn}" Padding="12,4" Click="Close_Click"/>
+          </StackPanel>
+        </Grid>
+
+        <Grid Grid.Row="1" Margin="30,0,30,26">
+
+          <!-- ИГРАТЬ -->
+          <Grid x:Name="pgPlay">
+            <Grid.RowDefinitions>
+              <RowDefinition Height="Auto"/><RowDefinition Height="Auto"/>
+              <RowDefinition Height="Auto"/><RowDefinition Height="Auto"/>
+              <RowDefinition Height="Auto"/><RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <TextBlock Text="СБОРКА" Style="{StaticResource Lbl}" Margin="0,0,0,8"/>
+            <ListBox x:Name="lbPlayInstance" Grid.Row="1" Style="{StaticResource ChipList}" MaxHeight="96" SelectionChanged="PlayInst_Changed"/>
+            <TextBlock Grid.Row="2" Text="АККАУНТ" Style="{StaticResource Lbl}" Margin="0,6,0,8"/>
+            <ListBox x:Name="lbPlayAccount" Grid.Row="3" Style="{StaticResource ChipList}" MaxHeight="60" SelectionChanged="PlayAcc_Changed"/>
+            <Grid Grid.Row="4" Margin="0,14,0,0">
+              <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+              <Button x:Name="btnPlay" Content="ИГРАТЬ" FontSize="22" Padding="48,14" Style="{StaticResource PrimaryBtn}" Click="Play_Click">
+                <Button.Effect>
+                  <DropShadowEffect BlurRadius="26" ShadowDepth="0" Opacity="0.7" Color="{DynamicResource AccentColor}"/>
+                </Button.Effect>
+              </Button>
+              <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="22,0,0,0">
+                <TextBlock x:Name="txtStatus" Text="Готово к запуску" Foreground="{StaticResource TextBrush}" Margin="0,0,0,8"/>
+                <ProgressBar x:Name="pbar" Height="6" Minimum="0" Maximum="100" Foreground="{DynamicResource Accent}" Background="{StaticResource Surface2}" BorderThickness="0"/>
+              </StackPanel>
+            </Grid>
+            <TextBox x:Name="txtLog" Grid.Row="5" Margin="0,18,0,0" Style="{StaticResource Inp}" IsReadOnly="True"
+                     FontFamily="Consolas" FontSize="12" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" BorderThickness="0"/>
+          </Grid>
+
+          <!-- СБОРКИ -->
+          <ScrollViewer x:Name="pgInst" Visibility="Collapsed" VerticalScrollBarVisibility="Auto">
+            <StackPanel>
+              <TextBlock Text="МОИ СБОРКИ" Style="{StaticResource Lbl}" Margin="0,0,0,8"/>
+              <ListBox x:Name="lbInstances" Style="{StaticResource ChipList}"/>
+              <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
+                <Button Content="Папка сборки" Style="{StaticResource Btn}" Click="OpenInst_Click" Margin="0,0,8,0"/>
+                <Button Content="Папка mods" Style="{StaticResource Btn}" Click="OpenMods_Click" Margin="0,0,8,0"/>
+                <Button Content="Удалить" Style="{StaticResource Btn}" Click="DelInst_Click"/>
+              </StackPanel>
+
+              <TextBlock Text="НОВАЯ СБОРКА" Style="{StaticResource Lbl}" Margin="0,28,0,8"/>
+              <TextBox x:Name="tbInstName" Style="{StaticResource Inp}" MaxLength="40" Width="320" HorizontalAlignment="Left"/>
+              <TextBlock Text="ВЕРСИЯ MINECRAFT" Style="{StaticResource Lbl}"/>
+              <ListBox x:Name="lbVersions" Style="{StaticResource ChipList}"/>
+              <TextBlock Text="ЗАГРУЗЧИК" Style="{StaticResource Lbl}" Margin="0,8,0,8"/>
+              <ListBox x:Name="lbLoaders" Style="{StaticResource ChipList}"/>
+              <CheckBox x:Name="cbOptimize" IsChecked="True" Content="Лёгкая оптимизация (Sodium / Lithium / FerriteCore / ModernFix — ставятся сами)"/>
+              <Button Content="Создать сборку" Style="{StaticResource PrimaryBtn}" HorizontalAlignment="Left" Margin="0,18,0,20" Click="CreateInst_Click"/>
+            </StackPanel>
+          </ScrollViewer>
+
+          <!-- АККАУНТЫ -->
+          <ScrollViewer x:Name="pgAcc" Visibility="Collapsed" VerticalScrollBarVisibility="Auto">
+            <StackPanel>
+              <TextBlock Text="ОФЛАЙН-АККАУНТЫ" Style="{StaticResource Lbl}" Margin="0,0,0,8"/>
+              <ListBox x:Name="lbAccounts" Style="{StaticResource ChipList}" SelectionChanged="Acc_Changed"/>
+              <TextBlock x:Name="txtUuid" Foreground="{StaticResource Muted}" FontFamily="Consolas" FontSize="12" Margin="0,2,0,0"/>
+              <Button Content="Удалить выбранный" Style="{StaticResource Btn}" HorizontalAlignment="Left" Margin="0,12,0,0" Click="DelAcc_Click"/>
+
+              <TextBlock Text="НОВЫЙ НИК" Style="{StaticResource Lbl}" Margin="0,28,0,8"/>
+              <TextBox x:Name="tbNick" Style="{StaticResource Inp}" MaxLength="16" Width="260" HorizontalAlignment="Left"/>
+              <TextBlock Text="3–16 символов: латиница, цифры, _" Foreground="{StaticResource Muted}" FontSize="12" Margin="0,6,0,0"/>
+              <Button Content="Добавить" Style="{StaticResource PrimaryBtn}" HorizontalAlignment="Left" Margin="0,14,0,0" Click="AddAcc_Click"/>
+              <TextBlock TextWrapping="Wrap" Foreground="{StaticResource Muted}" FontSize="12" Margin="0,24,0,0"
+                         Text="Офлайн-режим: вход без Microsoft. На серверах с online-mode зайти нельзя — только одиночная игра и сервера с отключённой проверкой."/>
+            </StackPanel>
+          </ScrollViewer>
+
+          <!-- НАСТРОЙКИ -->
+          <ScrollViewer x:Name="pgSet" Visibility="Collapsed" VerticalScrollBarVisibility="Auto">
+            <StackPanel>
+              <TextBlock x:Name="txtRam" Text="ОЗУ" Style="{StaticResource Lbl}" Margin="0,0,0,8"/>
+              <Slider x:Name="slRam" Minimum="1024" Maximum="8192" TickFrequency="256" IsSnapToTickEnabled="True" ValueChanged="Ram_Changed" Width="420" HorizontalAlignment="Left"/>
+
+              <TextBlock Text="ДОП. JVM-АРГУМЕНТЫ" Style="{StaticResource Lbl}"/>
+              <TextBox x:Name="tbJvm" Style="{StaticResource Inp}"/>
+              <TextBlock Text="ПУТЬ К JAVA (пусто — лаунчер поставит сам)" Style="{StaticResource Lbl}"/>
+              <TextBox x:Name="tbJava" Style="{StaticResource Inp}"/>
+
+              <TextBlock Text="ОКНО ИГРЫ" Style="{StaticResource Lbl}"/>
+              <StackPanel Orientation="Horizontal">
+                <TextBox x:Name="tbW" Style="{StaticResource Inp}" Width="80"/>
+                <TextBlock Text="×" Foreground="{StaticResource Muted}" VerticalAlignment="Center" Margin="10,0"/>
+                <TextBox x:Name="tbH" Style="{StaticResource Inp}" Width="80"/>
+              </StackPanel>
+              <CheckBox x:Name="cbFull" Content="Полный экран"/>
+              <CheckBox x:Name="cbClose" Content="Скрывать лаунчер, пока идёт игра"/>
+
+              <TextBlock Text="ЦВЕТ ЛАУНЧЕРА" Style="{StaticResource Lbl}" Margin="0,22,0,8"/>
+              <StackPanel x:Name="panelAccents" Orientation="Horizontal"/>
+
+              <StackPanel Orientation="Horizontal" Margin="0,24,0,20">
+                <Button Content="Сохранить" Style="{StaticResource PrimaryBtn}" Click="SaveSettings_Click" Margin="0,0,8,0"/>
+                <Button Content="Папка лаунчера" Style="{StaticResource Btn}" Click="OpenRoot_Click" Margin="0,0,8,0"/>
+                <Button Content="Логи" Style="{StaticResource Btn}" Click="OpenLogs_Click"/>
+              </StackPanel>
+            </StackPanel>
+          </ScrollViewer>
+
+        </Grid>
+      </Grid>
+    </Grid>
+  </Border>
+</Window>
